@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TopTier & Co. | Keyboard Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closePanels()"></div>
+
+<nav class="sidebar" id="sidebar">
+    <div class="logo-area"><i class="fa-solid fa-keyboard"></i> <span><span style="color: white;">TopTier </span>& Co.</span></div>
+    <ul>
+        <li class="active" id="nav-home" onclick="switchView('home')"><i class="fa-solid fa-house"></i> <span>Home</span></li>
+        <li id="nav-shop" onclick="switchView('shop')"><i class="fa-solid fa-cart-shopping"></i> <span>Shop</span></li>
+        <li id="nav-downloads" onclick="switchView('downloads')"><i class="fa-solid fa-download"></i> <span>Downloads</span></li>
+        <li id="nav-orders" onclick="switchView('orders')">
+            <i class="fa-solid fa-clock-rotate-left"></i> 
+            <span>My Orders</span>
+            <span id="historyCount" class="history-badge">0</span>
+        </li>
+    </ul>
+</nav>
+
+<div class="main">
+    <div class="header">
+        <button class="btn-icon" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+        <h2 style="font-weight: 800; letter-spacing: -1px;">TopTier  <span style="color:var(--accent)">& Co.</span></h2>
+        <button class="btn-icon" onclick="openCart()">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <div class="cart-badge" id="cartCount">0</div>
+        </button>
+    </div>
+
+    <div class="content-area">
+        <div id="homeView" class="view-section active">
+            <div class="hero">
+                <span style="background:var(--accent); color:#000; padding:4px 12px; border-radius:50px; font-size:0.7rem; font-weight:800; margin-bottom:20px; display:inline-block;">2026 COLLECTION</span>
+                <h1>Upgrade Your <br><span style="color:var(--accent)">Typing Experience.</span></h1>
+                <p>Explore our curated selection of mechanical keyboards, custom keycaps, and enthusiast-grade switches.</p>
+                <button class="btn-primary" onclick="switchView('shop')">Shop All Gear <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+
+            <div class="category-grid">
+                <div class="cat-card" onclick="switchView('shop')"><i class="fa-solid fa-keyboard"></i><h3>Keyboards</h3></div>
+                <div class="cat-card" onclick="switchView('downloads')"><i class="fa-solid fa-microchip"></i><h3>Softwares</h3></div>
+            </div>
+
+            <h2 style="margin-bottom: 20px;">Trending Now</h2>
+            <div class="products-grid" id="featuredList"></div>
+        </div>
+
+        <div id="shopView" class="view-section">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin: 40px 0 20px;">
+                <h2>All Products</h2>
+                <input type="search" id="shopSearch" placeholder="Search products..." style="width:280px; margin-bottom:0;" oninput="handleSearch(this.value, 'products')">
+            </div>
+            <div class="products-grid" id="shopList"></div>
+        </div>
+
+        <div id="downloadsView" class="view-section">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin: 40px 0 20px;">
+                <h2>Drivers & Assets</h2>
+                <input type="search" id="downloadSearch" placeholder="Search drivers..." style="width:280px; margin-bottom:0;" oninput="handleSearch(this.value, 'downloads')">
+            </div>
+            <div class="download-grid" id="downloadList"></div>
+        </div>
+
+        <div id="ordersView" class="view-section">
+            <h2 style="margin: 40px 0 20px;">Order History</h2>
+            <div id="orderHistoryList"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-col">
+                <h2 style="font-weight: 800; letter-spacing: -1px;">TopTier  <span style="color:var(--accent)">& Co.</span></h2>
+                <p>Your one-stop shop for everything mechanical keyboards. Designed for enthusiasts, built for performance.</p>
+                <div class="social-links">
+                    <i class="fa-brands fa-facebook"></i>
+                    <i class="fa-brands fa-instagram"></i>
+                    <i class="fa-brands fa-discord"></i>
+                    <i class="fa-brands fa-youtube"></i>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li onclick="switchView('home')">Home</li>
+                    <li onclick="switchView('shop')">Shop</li>
+                    <li onclick="switchView('downloads')">Downloads</li>
+                    <li onclick="switchView('orders')">My Orders</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul>
+                    <li>Shipping Policy</li>
+                    <li>Refund Policy</li>
+                    <li>Terms of Service</li>
+                    <li>Contact Us</li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2026 TopTier Boards All rights reserved. | Made for the Keyboard Community.
+        </div>
+    </footer>
+</div>
+
+<div class="sliding-panel" id="cartPanel">
+    <div style="padding:25px; border-bottom:1px solid #1e293b; display:flex; justify-content:space-between; align-items:center;">
+        <h3>Your Cart</h3><button class="btn-icon" onclick="closePanels()"><i class="fa-solid fa-x"></i></button>
+    </div>
+    <div id="cartItemsContainer" style="padding:25px; flex:1; overflow-y:auto;"></div>
+    <div style="padding:25px; border-top:1px solid #1e293b;">
+        <div id="cartTotalDisplay" style="margin-bottom:15px; font-weight:800; font-size:1.2rem; color:var(--accent);"></div>
+        <button class="btn-primary" style="width:100%" onclick="openCheckout()">Go to Checkout</button>
+    </div>
+</div>
+
+<div class="sliding-panel" id="checkoutPanel">
+    <div style="padding:25px; border-bottom:1px solid #1e293b; display:flex; justify-content:space-between; align-items:center;">
+        <h3>Checkout</h3><button class="btn-icon" onclick="closePanels()"><i class="fa-solid fa-x"></i></button>
+    </div>
+    <div style="padding:25px;">
+        <input type="text" id="custName" placeholder="Full Name">
+        <input type="text" id="custPhone" placeholder="Phone Number">
+        <input type="text" id="custAddress" placeholder="Shipping Address">
+        <div id="checkoutSummary" style="background:var(--bg); padding:20px; border-radius:12px; margin-top:10px;"></div>
+        <button class="btn-primary" style="width:100%; margin-top:20px;" onclick="confirmOrderPopup()">Confirm Order</button>
+    </div>
+</div>
+
+<div id="productModal" onclick="closeProductModal()" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:1000; align-items:center; justify-content:center;">
+    <div class="modal-content" onclick="event.stopPropagation()" style="background:var(--card-bg); width:90%; max-width:500px; padding:30px; border-radius:24px; border:1px solid #1e293b; margin: auto;">
+        <div id="productModalBody"></div>
+    </div>
+</div>
+
+<div id="customConfirm" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <h3>Confirm Order</h3>
+        <p>Are you sure you want to place this order?</p>
+        <div class="modal-buttons">
+            <button id="confirmYes" class="btn-ok">OK</button>
+            <button id="confirmNo" class="btn-cancel">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<div id="toast">Item added to cart!</div>
+
+
+
+<script>
+    const products = [
+        { id: 1, name: "AULA S75 PRO", price: 1800, image: "Images/S75PRO.jpg", desc: "Mechanical Gasket Mount Keyboard." },
+        { id: 2, name: "AULA MINI60 HE PRO", price: 1300, image: "Images/MINI60.jpg", desc: "Hall Effect Magnetic Switch Keyboard." },
+        { id: 3, name: "AULA F75", price: 1600, image: "Images/F75.jpg", desc: "75% Wireless Mechanical Keyboard." },
+        { id: 4, name: "AULA WIN60 HE", price: 900, image: "Images/WIN60.jpg", desc: "Wired Magnetic Switch Gaming Keyboard." },
+        { id: 5, name: "AULA HERO68 HE", price: 1500, image: "Images/HERO68.jpg", desc: "Customizable RGB Mechanical Keyboard." },
+        { id: 7, name: "AULA NOVA75", price: 2300, image: "Images/NOVA75.jpg", desc: "Modern Layout Mechanical Keyboard." },
+        { id: 9, name: "LEOBOG HI98C PRO", price: 3000, image: "Images/HI98.jpg", desc: "Ergonomic Gaming Mouse." },
+        { id: 10, name: "LEOBOG HI75C PRO", price: 2000, image: "Images/HI75.jpg", desc: "Premium Aluminum DIY Kit." }
+    ];
+
+    const downloads = [
+        { id: 101, name: "AULA MINI60 HE PRO", type: "Driver", size: "2.2 MB", image: "Images/MINI60.jpg", path: "KEYBOARD SOFTWARES/AULA MINI/MINI_60_HE_PRO_FENG_0.01_V1.53.exe" },
+        { id: 102, name: "AULA S75 Pro", type: "Driver", size: "8.06 MB", image: "Images/S75PRO.jpg", path: "KEYBOARD SOFTWARES/AULA S75 PRO/S75Pro Driver-1.0.0.1.exe" },
+        { id: 103, name: "AULA F75", type: "Driver", size: "2.34 MB", image: "Images/F75.jpg", path: "KEYBOARD SOFTWARES/AULA F75/AULA F75 Setup v2.0 20240509.exe" },
+         { id: 104, name: "AULA WIN60 HE", type: "Web Driver", size: "", image: "Images/WIN60.jpg", path: "https://hed.aulacn.com/" },
+        { id: 105, name: "AULA HERO68 HE", type: "Web Driver", size: "", image: "Images/HERO68.jpg", path: "https://hero.aulastar.com/" },
+        { id: 106, name: "AULA NOVA75", type: "Driver", size: "8.15 MB", image: "Images/NOVA75.jpg", path: "KEYBOARD SOFTWARES/AULA NOVA75/AULA NOVA75 Driver-1.0.0.3.exe" },
+        { id: 107, name: "LEOBOG HI98C PRO", type: "Driver", size: "3.31 MB", image: "Images/HI98.jpg", path: "KEYBOARD SOFTWARES/LEOBOG HI75, HI98C PRO/LEOBOG KEYBOARD.exe" },
+        { id: 108, name: "LEOBOG HI75C PRO", type: "Driver", size: "3.31 MB", image: "Images/HI75.jpg", path: "KEYBOARD SOFTWARES/LEOBOG HI75, HI98C PRO/LEOBOG KEYBOARD.exe" }
+    ];
+
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let orderHistory = JSON.parse(localStorage.getItem('orders')) || [];
+
+    function switchView(view) {
+        document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.sidebar li').forEach(l => l.classList.remove('active'));
+        document.getElementById(view + 'View').classList.add('active');
+        document.getElementById('nav-' + view).classList.add('active');
+        window.scrollTo(0,0);
+        
+        document.getElementById('shopSearch').value = "";
+        document.getElementById('downloadSearch').value = "";
+        
+        renderProducts(products);
+        renderDownloads(downloads);
+        if(view === 'orders') renderHistory();
+    }
+
+    function handleSearch(query, type) {
+        const q = query.toLowerCase();
+        if (type === 'products') {
+            const filtered = products.filter(p => p.name.toLowerCase().includes(q));
+            renderProducts(filtered);
+        } else if (type === 'downloads') {
+            const filtered = downloads.filter(d => d.name.toLowerCase().includes(q) || d.type.toLowerCase().includes(q));
+            renderDownloads(filtered);
+        }
+    }
+
+    function renderProducts(dataList) {
+        const featured = document.getElementById('featuredList');
+        const shop = document.getElementById('shopList');
+        const html = dataList.map(p => `
+            <div class="product-card" onclick="openProductModal(${p.id})">
+                <div class="prod-img-container"><img src="${p.image}"></div>
+                <h4>${p.name}</h4>
+                <div style="color:var(--accent); font-weight:800; margin-top:10px;">₱${p.price.toLocaleString()}</div>
+                <button class="btn-card-add" onclick="event.stopPropagation(); addToCart(${p.id}, 1)">
+                    <i class="fa-solid fa-cart-plus"></i> Add
+                </button>
+            </div>`).join('');
+        if(featured && dataList === products) featured.innerHTML = html;
+        if(shop) shop.innerHTML = html || '<p style="color:var(--text-dim)">No products found.</p>';
+    }
+
+    function renderDownloads(dataList) {
+        document.getElementById('downloadList').innerHTML = dataList.map(dl => `
+            <div class="download-card">
+                <div class="mini-thumb" style="width:60px; height:60px; border-radius:12px;"><img src="${dl.image}"></div>
+                <div style="flex:1">
+                    <h4 style="font-size:0.95rem;">${dl.name}</h4>
+                    <p style="font-size:0.75rem; color:var(--text-dim)">${dl.type} • ${dl.size}</p>
+                </div>
+                <a href="${dl.path}" target="_blank" class="btn-icon"><i class="fa-solid fa-download"></i></a>
+            </div>`).join('') || '<p style="color:var(--text-dim)">No software found.</p>';
+    }
+
+    // --- Toast Function ---
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.innerText = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+
+    // --- Cart Functions ---
+    function addToCart(id, qty) {
+        const product = products.find(p => p.id === id);
+        const existing = cart.find(item => item.id === id);
+        if(existing) { existing.qty += qty; } else { cart.push({...product, qty: qty}); }
+        updateCart();
+        showToast(`${product.name} added to cart!`);
+    }
+
+    function updateCart() {
+        localStorage.setItem('cart', JSON.stringify(cart));
+        const totalItems = cart.reduce((acc, curr) => acc + curr.qty, 0);
+        document.getElementById('cartCount').innerText = totalItems;
+    }
+
+    function openCart() {
+        closePanels();
+        document.getElementById('cartPanel').classList.add('open');
+        document.getElementById('overlay').style.display = 'block';
+        renderCartItems();
+    }
+
+    function renderCartItems() {
+        const total = cart.reduce((acc, curr) => acc + (curr.price * curr.qty), 0);
+        document.getElementById('cartItemsContainer').innerHTML = cart.map((item, i) => `
+            <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px;">
+                <div class="mini-thumb"><img src="${item.image}"></div>
+                <div style="flex:1">
+                    <b style="font-size:0.9rem;">${item.name}</b><br>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px;">
+                        <div class="cart-qty-controls">
+                            <button class="cart-qty-btn" onclick="changeCartQty(${i}, -1)">-</button>
+                            <span style="font-size:0.85rem; min-width:20px; text-align:center;">${item.qty}</span>
+                            <button class="cart-qty-btn" onclick="changeCartQty(${i}, 1)">+</button>
+                        </div>
+                        <span style="color:var(--accent); font-weight:700;">₱${(item.price * item.qty).toLocaleString()}</span>
+                    </div>
+                </div>
+                <i class="fa-solid fa-trash" style="color:var(--danger); cursor:pointer; font-size:0.9rem;" onclick="removeFromCart(${i})"></i>
+            </div>`).join('') || '<p style="text-align:center; color:var(--text-dim);">Your cart is empty.</p>';
+        document.getElementById('cartTotalDisplay').innerText = `Total: ₱${total.toLocaleString()}`;
+    }
+
+    function changeCartQty(index, change) {
+        cart[index].qty += change;
+        if (cart[index].qty <= 0) { cart.splice(index, 1); }
+        updateCart();
+        renderCartItems();
+    }
+
+    function removeFromCart(i) { cart.splice(i, 1); updateCart(); renderCartItems(); }
+
+    // --- Checkout Functions ---
+    function openCheckout() { 
+        if(cart.length === 0) return alert("Cart is empty");
+        closePanels(); 
+        document.getElementById('checkoutPanel').classList.add('open'); 
+        document.getElementById('overlay').style.display = 'block';
+        const sub = cart.reduce((a, b) => a + (b.price * b.qty), 0);
+        document.getElementById('checkoutSummary').innerText = `Amount to pay: ₱${(sub + 150).toLocaleString()} (incl. shipping)`;
+    }
+
+// --- Updated Popup Logic ---
+function confirmOrderPopup() {
+    // 1. Validate input first
+    if(!document.getElementById('custName').value) return alert("Please enter your name.");
+    
+    // 2. Show the custom modal instead of browser confirm
+    document.getElementById('customConfirm').style.display = 'flex';
+}
+
+// Logic for the Custom Modal Buttons
+document.getElementById('confirmNo').onclick = function() {
+    document.getElementById('customConfirm').style.display = 'none';
+}
+
+document.getElementById('confirmYes').onclick = function() {
+    document.getElementById('customConfirm').style.display = 'none';
+    processOrder(); // This actually places the order
+}
+
+    function processOrder() {
+        const order = {
+            id: "#ORD-" + Math.floor(Math.random()*1000000),
+            date: new Date().toLocaleDateString(),
+            items: [...cart],
+            total: cart.reduce((a, b) => a + (b.price * b.qty), 0) + 150,
+            estArrival: "Arriving in 3-5 days"
+        };
+        orderHistory.unshift(order);
+        localStorage.setItem('orders', JSON.stringify(orderHistory));
+        cart = []; 
+        updateCart(); 
+        closePanels(); 
+        switchView('orders');
+        updateHistoryCounter();
+        showToast("Order placed successfully!");
+    }
+
+    // --- Order History Functions ---
+    function renderHistory() {
+        const container = document.getElementById('orderHistoryList');
+        if (!container) return;
+        orderHistory = JSON.parse(localStorage.getItem('orders')) || [];
+        if (orderHistory.length === 0) {
+            container.innerHTML = `<div style="text-align:center; padding: 50px; color: var(--text-dim);"><i class="fa-solid fa-box-open" style="font-size: 3rem; margin-bottom: 20px; display: block;"></i><p>No orders yet.</p></div>`;
+            return;
+        }
+        container.innerHTML = orderHistory.map((o, index) => `
+            <div style="background:var(--card-bg); padding:25px; border-radius:24px; border:1px solid #1e293b; margin-bottom:20px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:15px;"><span style="color:var(--accent); font-weight:800;">${o.id}</span><small style="color:var(--text-dim)">${o.date}</small></div>
+                <div style="display:flex; gap:12px; margin-bottom:20px; flex-wrap: wrap;">
+                    ${o.items.map(item => `<div class="mini-thumb" title="${item.name} (x${item.qty})"><img src="${item.image}"></div>`).join('')}
+                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div><span style="font-size:0.85rem; color:var(--text-dim); display:block; margin-bottom:5px;"><i class="fa-solid fa-truck-fast"></i> ${o.estArrival}</span><b style="font-size:1.3rem;">₱${o.total.toLocaleString()}</b></div>
+                    <button class="btn-danger-outline" onclick="confirmCancelOrder(${index})">Cancel Order</button>
+                </div>
+            </div>`).join('');
+    }
+
+    function confirmCancelOrder(index) {
+        if(confirm("Are you sure you want to cancel this order? This action cannot be undone.")) {
+            orderHistory.splice(index, 1);
+            localStorage.setItem('orders', JSON.stringify(orderHistory));
+            renderHistory();
+            updateHistoryCounter();
+            showToast("Order cancelled.");
+        }
+    }
+
+    function updateHistoryCounter() {
+        const count = orderHistory.length;
+        const badge = document.getElementById('historyCount');
+        if(badge) { badge.innerText = count; badge.style.display = count > 0 ? 'inline-block' : 'none'; }
+    }
+
+    // --- Modals & UI ---
+    function openProductModal(id) {
+        const p = products.find(x => x.id === id);
+        if(!p) return;
+        document.getElementById('productModalBody').innerHTML = `
+            <div class="modal-product-img-container"><img src="${p.image}"></div>
+            <h2>${p.name}</h2>
+            <p style="color:var(--text-dim); margin:15px 0;">${p.desc}</p>
+            <div style="background:#0b0f19; padding:15px; border-radius:12px; margin-bottom:20px;">
+                <div style="display:flex; justify-content:space-between"><span>Price</span><b>₱${p.price.toLocaleString()}</b></div>
+            </div>
+            <button class="btn-primary" style="width:100%" onclick="addToCart(${p.id}, 1); closeProductModal()">Add to Cart</button>`;
+        document.getElementById('productModal').style.display = 'flex';
+    }
+
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('collapsed'); }
+    function closePanels() { document.querySelectorAll('.sliding-panel').forEach(p => p.classList.remove('open')); document.getElementById('overlay').style.display = 'none'; }
+    function closeProductModal() { document.getElementById('productModal').style.display = 'none'; }
+
+    // Initial Render
+    renderProducts(products);
+    renderDownloads(downloads);
+    updateCart();
+    updateHistoryCounter();
+</script>
+</body>
+</html>
